@@ -1,5 +1,5 @@
 import { promises } from "fs";
-import { join, resolve } from "path";
+import { join, resolve, sep } from "path";
 import compile from "../helpers/compile";
 import { baseUrl, outDir as actualPath } from "../helpers/config";
 
@@ -9,10 +9,14 @@ const expectPath = resolve(baseUrl, "./expect");
 compile(join(compilePath, "./*.ts"));
 
 async function assertFilesEqual(fileName: string) {
-  const [actualRaw, expectRaw] = await Promise.all([
+  let [actualRaw, expectRaw] = await Promise.all([
     promises.readFile(join(actualPath, fileName), { encoding: "utf8" }),
     promises.readFile(join(expectPath, fileName), { encoding: "utf8" })
   ]);
+
+  if (sep === "\\") {
+    actualRaw = actualRaw.replace(/\\\\/g, "/");
+  }
 
   expect(actualRaw).toEqual(expectRaw);
 }
