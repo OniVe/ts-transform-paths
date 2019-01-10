@@ -7,15 +7,8 @@ import { baseUrl, outDir } from "./config";
 
 rimrafSync(outDir);
 
-export default function compile(input: string) {
-  const loadResult = tsconfigSync(baseUrl);
-  const files = globSync(input);
-
-  const { options, errors } = ts.convertCompilerOptionsFromJson(
-    loadResult.config.compilerOptions,
-    baseUrl
-  );
-  for (const diagnostic of errors) {
+function logDiagnostics(diagnostics: ts.Diagnostic[]) {
+  for (const diagnostic of diagnostics) {
     if (diagnostic.file) {
       const { line, character } = diagnostic.file.getLineAndCharacterOfPosition(
         diagnostic.start || -1
@@ -29,6 +22,18 @@ export default function compile(input: string) {
       );
     }
   }
+}
+
+export default function compile(input: string) {
+  const loadResult = tsconfigSync(baseUrl);
+  const files = globSync(input);
+
+  const { options, errors } = ts.convertCompilerOptionsFromJson(
+    loadResult.config.compilerOptions,
+    baseUrl
+  );
+  logDiagnostics(errors);
+
   if (errors.length > 0) {
     return;
   }
@@ -43,18 +48,5 @@ export default function compile(input: string) {
     .getPreEmitDiagnostics(program)
     .concat(emitResult.diagnostics);
 
-  for (const diagnostic of allDiagnostics) {
-    if (diagnostic.file) {
-      const { line, character } = diagnostic.file.getLineAndCharacterOfPosition(
-        diagnostic.start || -1
-      );
-      const message = ts.flattenDiagnosticMessageText(
-        diagnostic.messageText,
-        "\n"
-      );
-      console.log(
-        `${diagnostic.file.fileName} (${line + 1},${character + 1}): ${message}`
-      );
-    }
-  }
+  logDiagnostics(allDiagnostics);
 }
