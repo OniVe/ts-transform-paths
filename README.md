@@ -34,7 +34,7 @@ See [examples/webpack](examples/webpack) for detail.
 
 ```js
 // webpack.config.js
-const pathsTransformer = require("ts-transform-paths/transformer").default;
+const pathsTransformer = require("ts-transform-paths").default;
 
 module.exports = {
   // ...
@@ -61,7 +61,7 @@ See [examples/rollup](examples/rollup) for detail.
 ```js
 // rollup.config.js
 import typescript from "rollup-plugin-typescript2";
-import pathsTransformer from "ts-transform-paths/transformer";
+import pathsTransformer from "ts-transform-paths";
 
 export default {
   // ...
@@ -89,7 +89,7 @@ for how to use this with module bundlers such as webpack or Rollup.
 {
   "compilerOptions": {
     // ...
-    "plugins": [{ "transform": "ts-transform-paths/transformer" }]
+    "plugins": [{ "transform": "ts-transform-paths" }]
   }
   // ...
 }
