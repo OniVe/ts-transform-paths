@@ -1,7 +1,7 @@
 import * as ts from "typescript";
 import { ITransformerOptions, PathAliasResolver } from "./types";
 
-export function transformer(
+export default function transformer(
   program: ts.Program,
   options?: ITransformerOptions
 ): ts.TransformerFactory<ts.SourceFile> {
