@@ -1,6 +1,6 @@
 # ts-transform-paths
 
-[![npm](https://img.shields.io/npm/v/ts-transform-paths-tag.svg)](https://www.npmjs.com/package/ts-transform-paths-tag)
+[![npm](https://img.shields.io/npm/v/ts-transform-paths.svg)](https://www.npmjs.com/package/ts-transform-paths)
 
 Use this to load modules whose location is specified in the paths section of
 tsconfig.json.
