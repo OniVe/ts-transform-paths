@@ -2,7 +2,7 @@ import { sync as globSync } from "glob";
 import { sync as rimrafSync } from "rimraf";
 import { loadSync as tsconfigSync } from "tsconfig";
 import * as ts from "typescript";
-import { transformer } from "../../src";
+import transformer from "../../src";
 import { baseUrl, outDir } from "./config";
 
 rimrafSync(outDir);
