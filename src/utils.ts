@@ -4,7 +4,7 @@ const SEPARATORS = ["\\", "/"];
 const WILDCARDS = ["\\*", "/*"];
 
 export function stripWildcard(path: string): string {
-  if (WILDCARDS.indexOf(path.slice(-2)) >= 0) {
+  if (WILDCARDS.indexOf(path.slice(-2)) > -1) {
     return path.substr(0, path.length - 2);
   }
 
@@ -23,4 +23,14 @@ export function ensureTrailingPathDelimiter(searchPath: string) {
   }
 
   return searchPath;
+}
+
+export function getAlias(requestedModule: string) {
+  for (let i = 0; i < requestedModule.length; i++) {
+    if (SEPARATORS.indexOf(requestedModule[i]) > -1) {
+      return requestedModule.substring(0, i);
+    }
+  }
+
+  return requestedModule;
 }

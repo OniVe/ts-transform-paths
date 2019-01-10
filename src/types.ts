@@ -2,6 +2,7 @@ import * as path from "path";
 import * as ts from "typescript";
 import {
   ensureTrailingPathDelimiter,
+  getAlias,
   replaceDoubleSlashes,
   stripWildcard
 } from "./utils";
@@ -20,9 +21,7 @@ export class ProjectOptions {
   }
 
   public getMapping(requestedModule: string) {
-    const alias =
-      requestedModule.substring(0, requestedModule.indexOf("/")) ||
-      requestedModule;
+    const alias = getAlias(requestedModule);
 
     const index = this.aliases.indexOf(alias);
     if (index < 0) {
