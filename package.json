@@ -1,20 +1,32 @@
 {
   "name": "ts-transform-paths",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "license": "MIT",
   "author": "Igor Kuritsin <mail@onive.ru>",
   "scripts": {
     "test": "cross-env NODE_NO_WARNINGS=1 jasmine-ts \"spec/src/**/*.spec.ts\"",
-    "prettier": "prettier --write src/**/*.{js,ts} spec/src/**/*.ts",
+    "prettier": "prettier --write \"src/**/*.{js,ts}\" \"spec/src/**/*.ts\"",
     "prepublishOnly": "rimraf './dist' && tsc",
     "semantic-release": "semantic-release"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OniVe/ts-transform-paths.git"
+  },
+  "bugs": {
+    "url": "https://github.com/OniVe/ts-transform-paths/issues"
   },
   "keywords": [
     "paths",
     "transform",
     "tsconfig",
     "typescript"
+  ],
+  "pre-commit": [
+    "prettier",
+    "test"
   ],
   "dependencies": {},
   "devDependencies": {
