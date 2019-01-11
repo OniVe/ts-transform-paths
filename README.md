@@ -5,6 +5,12 @@
 Use this to load modules whose location is specified in the paths section of
 tsconfig.json.
 
+## Install
+
+```sh
+yarn add ts-transform-paths -D
+```
+
 ## Requirement
 
 TypeScript >= 2.4.1
