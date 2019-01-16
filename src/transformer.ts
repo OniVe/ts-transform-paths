@@ -5,12 +5,7 @@ export default function transformer(
   program: ts.Program,
   options?: ITransformerOptions
 ): ts.TransformerFactory<ts.SourceFile> {
-  const aliasResolver = new PathAliasResolver(program.getCompilerOptions(), [
-    ".ts",
-    ".tsx",
-    ".js",
-    ".jsx"
-  ]);
+  const aliasResolver = new PathAliasResolver(program.getCompilerOptions());
 
   function visitNode(node: ts.Node, program: ts.Program): ts.Node {
     if (!isImportPath(node)) {

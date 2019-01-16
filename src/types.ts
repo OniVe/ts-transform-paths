@@ -46,14 +46,12 @@ export class ProjectOptions {
 }
 
 export class PathAliasResolver {
-  readonly extensions: string[];
   readonly outPath: string;
   readonly options: ProjectOptions;
 
-  constructor(compilerOptions: ts.CompilerOptions, extensions: string[]) {
+  constructor(compilerOptions: ts.CompilerOptions) {
     const projectPath = process.cwd();
 
-    this.extensions = extensions;
     this.options = new ProjectOptions(compilerOptions);
     this.outPath = path.resolve(projectPath, this.options.baseUrl || ".");
   }
