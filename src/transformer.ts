@@ -5,9 +5,18 @@ export default function transformer(
   program: ts.Program,
   options?: ITransformerOptions
 ): ts.TransformerFactory<ts.SourceFile> {
-  const aliasResolver = new PathAliasResolver(program.getCompilerOptions());
+  return function optionsFactory(context: ts.TransformationContext) {
+    return transformerFactory(context, options);
+  };
+}
 
-  function visitNode(node: ts.Node, program: ts.Program): ts.Node {
+export function transformerFactory(
+  context: ts.TransformationContext,
+  options?: ITransformerOptions
+) {
+  const aliasResolver = new PathAliasResolver(context.getCompilerOptions());
+
+  function visitNode(node: ts.Node): ts.Node {
     if (!isImportPath(node)) {
       return node;
     }
@@ -19,28 +28,24 @@ export default function transformer(
 
   function visitNodeAndChildren(
     node: ts.SourceFile,
-    program: ts.Program,
     context: ts.TransformationContext
   ): ts.SourceFile;
   function visitNodeAndChildren(
     node: ts.Node,
-    program: ts.Program,
     context: ts.TransformationContext
   ): ts.Node;
   function visitNodeAndChildren(
     node: ts.Node,
-    program: ts.Program,
     context: ts.TransformationContext
   ): ts.Node {
     return ts.visitEachChild(
-      visitNode(node, program),
-      (childNode) => visitNodeAndChildren(childNode, program, context),
+      visitNode(node),
+      (childNode) => visitNodeAndChildren(childNode, context),
       context
     );
   }
 
-  return (context: ts.TransformationContext) => (file: ts.SourceFile) =>
-    visitNodeAndChildren(file, program, context);
+  return (file: ts.SourceFile) => visitNodeAndChildren(file, context);
 }
 
 function isImportPath(node: ts.Node): node is ts.StringLiteral {
