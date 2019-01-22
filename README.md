@@ -1,8 +1,11 @@
 # ts-transform-paths
 
 [![circleci](https://badgen.net/circleci/github/OniVe/ts-transform-paths)](https://circleci.com/gh/OniVe/ts-transform-paths)
+
 [![npm-version](https://badgen.net/npm/v/ts-transform-paths)](https://www.npmjs.com/package/ts-transform-paths)
+
 [![npm-downloads](https://badgen.net/npm/dm/ts-transform-paths)](https://www.npmjs.com/package/ts-transform-paths)
+
 [![license](https://badgen.net/npm/license/ts-transform-paths)](https://www.npmjs.com/package/ts-transform-paths)
 
 Use this to load modules whose location is specified in the paths section of
@@ -39,8 +42,6 @@ The followings are the example usage of the custom transformer.
 
 ### webpack (with ts-loader or awesome-typescript-loader)
 
-See [examples/webpack](examples/webpack) for detail.
-
 ```js
 // webpack.config.js
 const pathsTransformer = require("ts-transform-paths").default;
@@ -65,8 +66,6 @@ module.exports = {
 
 ### Rollup (with rollup-plugin-typescript2)
 
-See [examples/rollup](examples/rollup) for detail.
-
 ```js
 // rollup.config.js
 import typescript from "rollup-plugin-typescript2";
@@ -89,7 +88,7 @@ export default {
 
 ### ttypescript
 
-See [examples/ttypescript](examples/ttypescript) for detail. See
+See
 [ttypescript's README](https://github.com/cevek/ttypescript/blob/master/README.md)
 for how to use this with module bundlers such as webpack or Rollup.
 
@@ -102,6 +101,34 @@ for how to use this with module bundlers such as webpack or Rollup.
   }
   // ...
 }
+```
+
+### ts-node
+
+```ts
+// my-ts-script.ts
+import { MyClass } from "@schema";
+
+const myClass = new MyClass("Message");
+```
+
+```js
+// index.js
+const pathsTransformer = require("ts-transform-paths").default;
+
+require("ts-node").register({
+  transformers: {
+    before: [pathsTransformer()]
+  }
+});
+
+require("./my-ts-script");
+```
+
+and run
+
+```sh
+yarn node ./index.js
 ```
 
 ## Thanks
