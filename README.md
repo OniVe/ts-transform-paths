@@ -1,11 +1,8 @@
 # ts-transform-paths
 
 [![circleci](https://badgen.net/circleci/github/OniVe/ts-transform-paths)](https://circleci.com/gh/OniVe/ts-transform-paths)
-
 [![npm-version](https://badgen.net/npm/v/ts-transform-paths)](https://www.npmjs.com/package/ts-transform-paths)
-
 [![npm-downloads](https://badgen.net/npm/dm/ts-transform-paths)](https://www.npmjs.com/package/ts-transform-paths)
-
 [![license](https://badgen.net/npm/license/ts-transform-paths)](https://www.npmjs.com/package/ts-transform-paths)
 
 Use this to load modules whose location is specified in the paths section of
