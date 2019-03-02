@@ -7,6 +7,8 @@ import {
   stripWildcard
 } from "./utils";
 
+const REGEXP_ALL_BACKSLASH = /\\/g;
+
 export interface ITransformerOptions {}
 
 export class ProjectOptions {
@@ -71,7 +73,7 @@ export class PathAliasResolver {
         relativePath = "." + path.sep + relativePath;
       }
 
-      return relativePath;
+      return relativePath.replace(REGEXP_ALL_BACKSLASH, "/"); //;
     } else {
       return requestedModule;
     }

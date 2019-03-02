@@ -1,5 +1,5 @@
 import { promises } from "fs";
-import { join, resolve, sep } from "path";
+import { join, resolve } from "path";
 import compile from "../helpers/compile";
 import { baseUrl, outDir as actualPath } from "../helpers/config";
 
@@ -13,10 +13,6 @@ async function assertFilesEqual(fileName: string) {
     promises.readFile(join(actualPath, fileName), { encoding: "utf8" }),
     promises.readFile(join(expectPath, fileName), { encoding: "utf8" })
   ]);
-
-  if (sep === "\\") {
-    actualRaw = actualRaw.replace(/\\\\/g, "/");
-  }
 
   expect(actualRaw).toEqual(expectRaw);
 }
