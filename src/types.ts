@@ -73,7 +73,7 @@ export class PathAliasResolver {
         relativePath = "." + path.sep + relativePath;
       }
 
-      return relativePath.replace(REGEXP_ALL_BACKSLASH, "/"); //;
+      return relativePath.replace(REGEXP_ALL_BACKSLASH, "/");
     } else {
       return requestedModule;
     }
