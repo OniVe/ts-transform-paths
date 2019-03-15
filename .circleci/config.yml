@@ -3,81 +3,55 @@
 
 version: 2
 
-jobs:
-  test_node_11:
-    docker:
-      # specify the version you desire here
-      - image: circleci/node:11
-
-    working_directory: ~/project
-
+references:
+  dependencies_cache_key: &dependencies_cache_key
+    v1-dependencies-{{ checksum "package.json" }}
+  dependencies_backup_cache_key: &dependencies_backup_cache_key
+    v1-dependencies-
+  run_tests: &run_tests
     steps:
       - checkout
-
-      # Download and cache dependencies
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
-
-      - run:
-          name: install dependencies
-          command: yarn install
-
+            - *dependencies_cache_key
+            - *dependencies_backup_cache_key
+      - run: yarn install
       - save_cache:
+          key: *dependencies_cache_key
           paths:
             - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
+      - run: yarn test
 
-      - run:
-          name: tests
-          command: yarn test
-
+jobs:
+  build:
+    docker:
+      - image: circleci/node:10
+    <<: *run_tests
   release:
     docker:
-      # specify the version you desire here
-      - image: circleci/node:11
-
-    working_directory: ~/project
-
+      - image: circleci/node:10
     steps:
       - checkout
-
-      # Download and cache dependencies
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
-
-      - run:
-          name: install dependencies
-          command: yarn install
-
+            - *dependencies_cache_key
+            - *dependencies_backup_cache_key
+      - run: yarn install
       - save_cache:
+          key: *dependencies_cache_key
           paths:
             - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
-
+      - run: sudo yarn global add semantic-release
       - run:
           name: prepublish
           command: yarn prepublishOnly
-
-      - run:
-          name: semantic
-          command: npx semantic-release
+      - run: semantic-release
 
 workflows:
   version: 2
-
-  test:
+  build:
     jobs:
-      - test_node_11
-
-  test_and_release:
-    jobs:
-      - test_node_11
+      - build
       - release:
           requires:
-            - test_node_11
+            - build
