@@ -17,7 +17,6 @@ references:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
   run_tests: &run_tests
-    <<: *install_dependencies
     steps:
       - run: yarn test
 
@@ -26,6 +25,7 @@ jobs:
     docker:
       - image: circleci/node:10
     working_directory: ~/project
+    <<: *install_dependencies
     <<: *run_tests
   release:
     docker:
