@@ -66,7 +66,7 @@ export class PathAliasResolver {
   public resolve(fileName: string, requestedModule: string) {
     const mapping = this.options.getMapping(requestedModule);
     if (mapping) {
-      const absoluteJsRequire = path.join(this.outPath, mapping);
+      const absoluteJsRequire = path.join(this.srcPath, mapping);
       const sourceDir = path.dirname(fileName);
 
       let relativePath = path.relative(sourceDir, absoluteJsRequire);
@@ -83,7 +83,13 @@ export class PathAliasResolver {
       if(this.srcPath != this.outPath && requestedModule[0] == "."){
         let relativeModulePath = fileName.replace(this.srcPath, '');
 
-        const relativeSrcModulePath = path.join(this.srcPath, path.dirname(relativeModulePath), `${requestedModule}.js`);
+        let lookupFile = requestedModule;
+
+        if(!lookupFile.endsWith('.js')){
+          lookupFile = `${requestedModule}.js`;
+        }
+
+        const relativeSrcModulePath = path.join(this.srcPath, path.dirname(relativeModulePath), lookupFile);
 
         if(fs.existsSync(relativeSrcModulePath)){
           // if a JS file exists in path within src directory, assume it will not be transpiled
