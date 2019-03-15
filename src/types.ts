@@ -78,7 +78,7 @@ export class PathAliasResolver {
         relativePath = "." + path.sep + relativePath;
       }
 
-      return relativePath.replace(REGEXP_ALL_BACKSLASH, "/"); //;
+      return relativePath.replace(REGEXP_ALL_BACKSLASH, "/");
     } else {
       if(this.srcPath != this.outPath && requestedModule[0] == "."){
         let relativeModulePath = fileName.replace(this.srcPath, '');
