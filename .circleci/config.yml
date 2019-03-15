@@ -4,36 +4,43 @@
 version: 2
 
 references:
-  install_dependencies: &install_dependencies
-    steps:
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
-      - run: yarn install
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
+  dependencies_cache_key: &dependencies_cache_key
+    v1-dependencies-{{ checksum "package.json" }}
+  dependencies_backup_cache_key: &dependencies_backup_cache_key
+    v1-dependencies-
   run_tests: &run_tests
     steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - *dependencies_cache_key
+            - *dependencies_backup_cache_key
+      - run: yarn install
+      - save_cache:
+          key: *dependencies_cache_key
+          paths:
+            - node_modules
       - run: yarn test
 
 jobs:
-  build-node10:
+  build:
     docker:
       - image: circleci/node:10
-    working_directory: ~/project
-    <<: *install_dependencies
     <<: *run_tests
   release:
     docker:
-      # specify the version you desire here
       - image: circleci/node:10
-    working_directory: ~/project
-    <<: *install_dependencies
     steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - *dependencies_cache_key
+            - *dependencies_backup_cache_key
+      - run: yarn install
+      - save_cache:
+          key: *dependencies_cache_key
+          paths:
+            - node_modules
       - run: sudo yarn global add semantic-release
       - run:
           name: prepublish
@@ -44,7 +51,7 @@ workflows:
   version: 2
   build:
     jobs:
-      - build-node10
+      - build
       - release:
           requires:
-            - build-node10
+            - build
