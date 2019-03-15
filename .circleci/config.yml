@@ -71,6 +71,10 @@ jobs:
 workflows:
   version: 2
 
+  test:
+    jobs:
+      - test_node_11
+
   test_and_release:
     jobs:
       - test_node_11
