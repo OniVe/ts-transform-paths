@@ -95,6 +95,8 @@ export class PathAliasResolver {
           lookupFile
         );
 
+        console.log(requestedModule, relativeSrcModulePath);
+
         if (fs.existsSync(relativeSrcModulePath)) {
           // if a JS file exists in path within src directory, assume it will not be transpiled
           return path
