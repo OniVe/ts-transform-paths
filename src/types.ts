@@ -81,6 +81,7 @@ export class PathAliasResolver {
       return relativePath.replace(REGEXP_ALL_BACKSLASH, "/");
     } else {
       if (this.srcPath != this.outPath && requestedModule[0] == ".") {
+        console.log(fileName, this.srcPath);
         let relativeModulePath = fileName.replace(this.srcPath, "");
 
         let lookupFile = requestedModule;
