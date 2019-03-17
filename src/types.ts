@@ -59,8 +59,8 @@ export class PathAliasResolver {
     const projectPath = process.cwd();
 
     this.options = new ProjectOptions(compilerOptions);
-    this.srcPath = path.resolve(projectPath, this.options.baseUrl || ".");
-    this.outPath = path.resolve(projectPath, this.options.outDir || ".");
+    this.srcPath = path.normalize(path.resolve(projectPath, this.options.baseUrl || "."));
+    this.outPath = path.normalize(path.resolve(projectPath, this.options.outDir || "."));
   }
 
   public resolve(fileName: string, requestedModule: string) {
@@ -81,8 +81,9 @@ export class PathAliasResolver {
       return relativePath.replace(REGEXP_ALL_BACKSLASH, "/");
     } else {
       if (this.srcPath != this.outPath && requestedModule[0] == ".") {
-        console.log(fileName, this.srcPath);
-        let relativeModulePath = fileName.replace(this.srcPath, "");
+        const normalizedFileName = path.normalize(fileName);
+        
+        let relativeModulePath = normalizedFileName.replace(this.srcPath, "");
 
         let lookupFile = requestedModule;
 
@@ -102,7 +103,7 @@ export class PathAliasResolver {
           // if a JS file exists in path within src directory, assume it will not be transpiled
           return path
             .relative(
-              fileName.replace(this.srcPath, this.outPath),
+              normalizedFileName.replace(this.srcPath, this.outPath),
               relativeSrcModulePath
             )
             .replace(/^\.\.\//g, "");
