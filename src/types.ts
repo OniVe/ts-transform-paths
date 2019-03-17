@@ -59,8 +59,12 @@ export class PathAliasResolver {
     const projectPath = process.cwd();
 
     this.options = new ProjectOptions(compilerOptions);
-    this.srcPath = path.normalize(path.resolve(projectPath, this.options.baseUrl || "."));
-    this.outPath = path.normalize(path.resolve(projectPath, this.options.outDir || "."));
+    this.srcPath = path.normalize(
+      path.resolve(projectPath, this.options.baseUrl || ".")
+    );
+    this.outPath = path.normalize(
+      path.resolve(projectPath, this.options.outDir || ".")
+    );
   }
 
   public resolve(fileName: string, requestedModule: string) {
@@ -99,12 +103,13 @@ export class PathAliasResolver {
 
         if (fs.existsSync(relativeSrcModulePath)) {
           // if a JS file exists in path within src directory, assume it will not be transpiled
-          return path.posix.normalize(path
+          return path
             .relative(
               normalizedFileName.replace(this.srcPath, this.outPath),
               relativeSrcModulePath
             )
-            .replace(/^\.\.\//g, ""));
+            .replace(/\\/g, "/") // force win32 paths to be POSIX
+            .replace(/^\.\.\//g, "");
         }
       }
 
