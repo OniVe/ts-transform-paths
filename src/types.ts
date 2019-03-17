@@ -82,7 +82,7 @@ export class PathAliasResolver {
     } else {
       if (this.srcPath != this.outPath && requestedModule[0] == ".") {
         const normalizedFileName = path.normalize(fileName);
-        
+
         let relativeModulePath = normalizedFileName.replace(this.srcPath, "");
 
         let lookupFile = requestedModule;
@@ -97,16 +97,14 @@ export class PathAliasResolver {
           lookupFile
         );
 
-        console.log(requestedModule, relativeSrcModulePath);
-
         if (fs.existsSync(relativeSrcModulePath)) {
           // if a JS file exists in path within src directory, assume it will not be transpiled
-          return path
+          return path.posix.normalize(path
             .relative(
               normalizedFileName.replace(this.srcPath, this.outPath),
               relativeSrcModulePath
             )
-            .replace(/^\.\.\//g, "");
+            .replace(/^\.\.\//g, ""));
         }
       }
 
