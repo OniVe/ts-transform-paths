@@ -1,0 +1,6 @@
+os:
+  - windows
+  - linux
+language: node_js
+node_js:
+  - "10"  
