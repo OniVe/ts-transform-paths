@@ -80,20 +80,29 @@ export class PathAliasResolver {
 
       return relativePath.replace(REGEXP_ALL_BACKSLASH, "/");
     } else {
-      if(this.srcPath != this.outPath && requestedModule[0] == "."){
-        let relativeModulePath = fileName.replace(this.srcPath, '');
+      if (this.srcPath != this.outPath && requestedModule[0] == ".") {
+        let relativeModulePath = fileName.replace(this.srcPath, "");
 
         let lookupFile = requestedModule;
 
-        if(!lookupFile.endsWith('.js')){
+        if (!lookupFile.endsWith(".js")) {
           lookupFile = `${requestedModule}.js`;
         }
 
-        const relativeSrcModulePath = path.join(this.srcPath, path.dirname(relativeModulePath), lookupFile);
+        const relativeSrcModulePath = path.join(
+          this.srcPath,
+          path.dirname(relativeModulePath),
+          lookupFile
+        );
 
-        if(fs.existsSync(relativeSrcModulePath)){
+        if (fs.existsSync(relativeSrcModulePath)) {
           // if a JS file exists in path within src directory, assume it will not be transpiled
-          return path.relative(fileName.replace(this.srcPath, this.outPath), relativeSrcModulePath).replace(/^\.\.\//g,'');
+          return path
+            .relative(
+              fileName.replace(this.srcPath, this.outPath),
+              relativeSrcModulePath
+            )
+            .replace(/^\.\.\//g, "");
         }
       }
 
