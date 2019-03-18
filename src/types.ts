@@ -1,4 +1,5 @@
 import * as path from "path";
+import * as fs from "fs";
 import * as ts from "typescript";
 import {
   ensureTrailingPathDelimiter,
@@ -13,12 +14,14 @@ export interface ITransformerOptions {}
 
 export class ProjectOptions {
   public readonly baseUrl: string;
+  public readonly outDir: string;
 
   private aliases: string[] = [];
   private paths: string[] = [];
 
   constructor(compilerOptions: ts.CompilerOptions) {
     this.baseUrl = compilerOptions.baseUrl || __dirname;
+    this.outDir = compilerOptions.outDir || this.baseUrl;
     this.processMappings(compilerOptions.paths || {});
   }
 
@@ -48,6 +51,7 @@ export class ProjectOptions {
 }
 
 export class PathAliasResolver {
+  readonly srcPath: string;
   readonly outPath: string;
   readonly options: ProjectOptions;
 
@@ -55,13 +59,18 @@ export class PathAliasResolver {
     const projectPath = process.cwd();
 
     this.options = new ProjectOptions(compilerOptions);
-    this.outPath = path.resolve(projectPath, this.options.baseUrl || ".");
+    this.srcPath = path.normalize(
+      path.resolve(projectPath, this.options.baseUrl || ".")
+    );
+    this.outPath = path.normalize(
+      path.resolve(projectPath, this.options.outDir || ".")
+    );
   }
 
   public resolve(fileName: string, requestedModule: string) {
     const mapping = this.options.getMapping(requestedModule);
     if (mapping) {
-      const absoluteJsRequire = path.join(this.outPath, mapping);
+      const absoluteJsRequire = path.join(this.srcPath, mapping);
       const sourceDir = path.dirname(fileName);
 
       let relativePath = path.relative(sourceDir, absoluteJsRequire);
@@ -75,6 +84,35 @@ export class PathAliasResolver {
 
       return relativePath.replace(REGEXP_ALL_BACKSLASH, "/");
     } else {
+      if (this.srcPath != this.outPath && requestedModule[0] == ".") {
+        const normalizedFileName = path.normalize(fileName);
+
+        let relativeModulePath = normalizedFileName.replace(this.srcPath, "");
+
+        let lookupFile = requestedModule;
+
+        if (!lookupFile.endsWith(".js")) {
+          lookupFile = `${requestedModule}.js`;
+        }
+
+        const relativeSrcModulePath = path.join(
+          this.srcPath,
+          path.dirname(relativeModulePath),
+          lookupFile
+        );
+
+        if (fs.existsSync(relativeSrcModulePath)) {
+          // if a JS file exists in path within src directory, assume it will not be transpiled
+          return path
+            .relative(
+              normalizedFileName.replace(this.srcPath, this.outPath),
+              relativeSrcModulePath
+            )
+            .replace(REGEXP_ALL_BACKSLASH, "/") // force win32 paths to be POSIX
+            .replace(/^\.\.\//g, "");
+        }
+      }
+
       return requestedModule;
     }
   }

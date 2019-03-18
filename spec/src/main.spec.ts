@@ -24,6 +24,10 @@ describe("paths", () => {
 });
 
 describe("dir-paths", () => {
+  it("legacy", async () => {
+    await assertFilesEqual("dir/legacy.js");
+  });
+
   it("const-file", async () => {
     await assertFilesEqual("dir/const-file.js");
   });
