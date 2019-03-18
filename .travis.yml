@@ -1,0 +1,32 @@
+jobs:
+  # TODO: disable after fix - https://travis-ci.community/t/current-known-issues-please-read-this-before-posting-a-new-topic/264/10
+  allow_failures:
+    - os: windows
+  include:
+    - stage: test
+      name: Linux - test
+      language: node_js
+      os: linux
+      node_js: "10"
+      cache: yarn
+      script: yarn test
+    - stage: test
+      name: Windows - test
+      language: node_js
+      os: windows
+      node_js: "10"
+      cache: yarn
+      script: yarn test
+    - stage: release
+      language: node_js
+      os: linux
+      node_js: "10"
+      branches:
+        only:
+          - master
+      cache: yarn
+      script: skip
+      deploy:
+        provider: script
+        skip_cleanup: true
+        script: bash script/deploy.sh
