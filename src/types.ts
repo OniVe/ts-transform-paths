@@ -108,7 +108,7 @@ export class PathAliasResolver {
               normalizedFileName.replace(this.srcPath, this.outPath),
               relativeSrcModulePath
             )
-            .replace(/\\/g, "/") // force win32 paths to be POSIX
+            .replace(REGEXP_ALL_BACKSLASH, "/") // force win32 paths to be POSIX
             .replace(/^\.\.\//g, "");
         }
       }

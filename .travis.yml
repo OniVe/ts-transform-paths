@@ -1,7 +1,0 @@
-os:
-  - windows
-  - linux
-language: node_js
-cache: npm
-node_js:
-  - "10"  
