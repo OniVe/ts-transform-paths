@@ -1,10 +1,16 @@
 jobs:
   include:
     - stage: test
+      name: Linux - test
       language: node_js
-      os:
-        - linux
-        - windows
+      os: linux
+      node_js: "10"
+      cache: yarn
+      script: yarn test
+    - stage: test
+      name: Windows - test
+      language: node_js
+      os: windows
       node_js: "10"
       cache: yarn
       script: yarn test
@@ -16,7 +22,8 @@ jobs:
         only:
           - master
       cache: yarn
+      script: skip
       deploy:
         provider: script
         skip_cleanup: true
-        script: ./script/deploy.sh
+        script: bash script/deploy.sh
