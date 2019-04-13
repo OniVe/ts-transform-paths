@@ -42,7 +42,7 @@
     "jasmine-ts": "^0.3.0",
     "prettier": "^1.15.3",
     "rimraf": "^2.6.3",
-    "semantic-release": "^15.13.2",
+    "semantic-release": "^15.13.3",
     "ts-node": "^7.0.1",
     "tsconfig": "^7.0.0",
     "typescript": "^3.2.2"
