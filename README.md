@@ -51,9 +51,7 @@ module.exports = {
         test: /\.ts$/,
         loader: "ts-loader", // or 'awesome-typescript-loader'
         options: {
-          getCustomTransformers: (program) => ({
-            before: [pathsTransformer(program)]
-          })
+          getCustomTransformers: (program) => pathsTransformer()
         }
       }
     ]
@@ -73,10 +71,7 @@ export default {
   plugins: [
     typescript({
       transformers: [
-        (service) => ({
-          before: [pathsTransformer(service.getProgram())],
-          after: []
-        })
+        (service) => pathsTransformer()
       ]
     })
   ]
@@ -114,15 +109,11 @@ const myClass = new MyClass("Message");
 const pathsTransformer = require("ts-transform-paths").default;
 
 require("ts-node").register({
-  transformers: {
-    before: [pathsTransformer()]
-  }
+  transformers: pathsTransformer()
 });
 
 require("./my-ts-script");
 ```
-
-and run
 
 ```sh
 yarn node ./index.js

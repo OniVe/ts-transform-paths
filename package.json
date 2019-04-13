@@ -8,7 +8,7 @@
   "scripts": {
     "test": "cross-env NODE_NO_WARNINGS=1 jasmine-ts \"spec/src/**/*.spec.ts\"",
     "prettier": "prettier --write \"src/**/*.{js,ts}\" \"spec/src/**/*.ts\" \"spec/fixtures/actual/**/*.{js,ts}\"",
-    "prepublishOnly": "rimraf './dist' && tsc",
+    "prepublishOnly": "rimraf dist && tsc",
     "semantic-release": "semantic-release"
   },
   "repository": {

@@ -1,57 +1,87 @@
 import * as ts from "typescript";
-import { ITransformerOptions, PathAliasResolver } from "./types";
+import AliasResolver from "./alias-resolver";
+import { chainBundle, isImportCall, isRequireCall } from "./ts-helpers";
+import { ITransformerOptions, Transformer, TransformerNode } from "./types";
 
 export default function transformer(
-  program: ts.Program,
+  program?: ts.Program,
   options?: ITransformerOptions
-): ts.TransformerFactory<ts.SourceFile> {
-  return function optionsFactory(context: ts.TransformationContext) {
+): Transformer {
+  function optionsFactory<T extends TransformerNode>(
+    context: ts.TransformationContext
+  ): ts.Transformer<T> {
     return transformerFactory(context, options);
+  }
+
+  return {
+    before: [optionsFactory],
+    afterDeclarations: [optionsFactory]
   };
 }
 
-export function transformerFactory(
+export function transformerFactory<T extends TransformerNode>(
   context: ts.TransformationContext,
   options?: ITransformerOptions
-) {
-  const aliasResolver = new PathAliasResolver(context.getCompilerOptions());
+): ts.Transformer<T> {
+  const aliasResolver = new AliasResolver(context.getCompilerOptions());
 
-  function visitNode(node: ts.Node): ts.Node {
-    if (!isImportPath(node)) {
-      return node;
+  function transformSourceFile(sourceFile: ts.SourceFile) {
+    function getResolvedPathNode(node: ts.StringLiteral) {
+      const resolvedPath = aliasResolver.resolve(
+        sourceFile.fileName,
+        node.text
+      );
+      return resolvedPath !== node.text
+        ? ts.createStringLiteral(resolvedPath)
+        : null;
     }
 
-    return ts.createStringLiteral(
-      aliasResolver.resolve(node.getSourceFile().fileName, node.text)
-    );
+    function pathReplacer(node: ts.Node): ts.Node {
+      if (ts.isStringLiteral(node)) {
+        return getResolvedPathNode(node) || node;
+      }
+      return ts.visitEachChild(node, pathReplacer, context);
+    }
+
+    function visitor(node: ts.Node): ts.Node {
+      /**
+       * e.g.
+       * - const x = require('path');
+       * - const x = import('path');
+       */
+      if (isRequireCall(node, false) || isImportCall(node)) {
+        return ts.visitEachChild(node, pathReplacer, context);
+      }
+
+      /**
+       * e.g.
+       * - import * as x from 'path';
+       * - import { x } from 'path';
+       */
+      if (
+        ts.isImportDeclaration(node) &&
+        ts.isStringLiteral(node.moduleSpecifier)
+      ) {
+        return ts.visitEachChild(node, pathReplacer, context);
+      }
+
+      /**
+       * e.g.
+       * - export { x } from 'path';
+       */
+      if (
+        ts.isExportDeclaration(node) &&
+        node.moduleSpecifier &&
+        ts.isStringLiteral(node.moduleSpecifier)
+      ) {
+        return ts.visitEachChild(node, pathReplacer, context);
+      }
+
+      return ts.visitEachChild(node, visitor, context);
+    }
+
+    return ts.visitEachChild(sourceFile, visitor, context);
   }
 
-  function visitNodeAndChildren(
-    node: ts.SourceFile,
-    context: ts.TransformationContext
-  ): ts.SourceFile;
-  function visitNodeAndChildren(
-    node: ts.Node,
-    context: ts.TransformationContext
-  ): ts.Node;
-  function visitNodeAndChildren(
-    node: ts.Node,
-    context: ts.TransformationContext
-  ): ts.Node {
-    return ts.visitEachChild(
-      visitNode(node),
-      (childNode) => visitNodeAndChildren(childNode, context),
-      context
-    );
-  }
-
-  return (file: ts.SourceFile) => visitNodeAndChildren(file, context);
-}
-
-function isImportPath(node: ts.Node): node is ts.StringLiteral {
-  return (
-    node.kind === ts.SyntaxKind.StringLiteral &&
-    node.parent &&
-    node.parent.kind === ts.SyntaxKind.ImportDeclaration
-  );
+  return chainBundle(transformSourceFile);
 }
