@@ -40,9 +40,13 @@ export default function compile(input: string) {
   const compilerHost = ts.createCompilerHost(options);
   const program = ts.createProgram(files, options, compilerHost);
 
-  const emitResult = program.emit(undefined, undefined, undefined, undefined, {
-    before: [transformer(program)]
-  });
+  const emitResult = program.emit(
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    transformer()
+  );
 
   const allDiagnostics = ts
     .getPreEmitDiagnostics(program)

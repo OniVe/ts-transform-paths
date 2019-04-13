@@ -8,51 +8,68 @@ const expectPath = resolve(baseUrl, "./expect");
 
 compile(join(compilePath, "./*.ts"));
 
-async function assertFilesEqual(fileName: string) {
-  let [actualRaw, expectRaw] = await Promise.all([
-    promises.readFile(join(actualPath, fileName), { encoding: "utf8" }),
-    promises.readFile(join(expectPath, fileName), { encoding: "utf8" })
+async function assertFilesEqual(fileName: string, fileExtension: string) {
+  const [expectRaw, actualRaw] = await Promise.all([
+    promises.readFile(join(expectPath, `${fileName}${fileExtension}`), {
+      encoding: "utf8"
+    }),
+    promises.readFile(join(actualPath, `${fileName}${fileExtension}`), {
+      encoding: "utf8"
+    })
   ]);
 
-  expect(actualRaw).toEqual(expectRaw);
+  expect(expectRaw.trim()).toEqual(actualRaw.trim());
 }
 
-describe("paths", () => {
-  it("main", async () => {
-    await assertFilesEqual("main.js");
+describe("import", () => {
+  const ext = ".js";
+
+  it("module-file-import-call", async () => {
+    await assertFilesEqual("module-file-import-call", ext);
+  });
+  it("module-file-require-call", async () => {
+    await assertFilesEqual("module-file-require-call", ext);
+  });
+  it("module-file-require-call", async () => {
+    await assertFilesEqual("module-file-require-call", ext);
+  });
+
+  it("module-dir-import-declaration", async () => {
+    await assertFilesEqual("module-dir-import-declaration", ext);
+  });
+
+  it("modules-file-import-declaration", async () => {
+    await assertFilesEqual("modules-file-import-declaration", ext);
+  });
+
+  it("modules-dir-import-declaration", async () => {
+    await assertFilesEqual("modules-dir-import-declaration", ext);
+  });
+
+  it("legacy-source", async () => {
+    await assertFilesEqual("dir/legacy", ext);
+  });
+  it("legacy-import-declaration", async () => {
+    await assertFilesEqual("legacy-import-declaration", ext);
   });
 });
 
-describe("dir-paths", () => {
-  it("legacy", async () => {
-    await assertFilesEqual("dir/legacy.js");
-  });
+describe("export", () => {
+  const ext = ".js";
 
-  it("const-file", async () => {
-    await assertFilesEqual("dir/const-file.js");
-  });
-  it("const-index", async () => {
-    await assertFilesEqual("dir/const-index.js");
-  });
-  it("module-file", async () => {
-    await assertFilesEqual("dir/module-file.js");
-  });
-  it("module-index", async () => {
-    await assertFilesEqual("dir/module-index.js");
+  it("modele-file-export-declaration", async () => {
+    await assertFilesEqual("modele-file-export-declaration", ext);
   });
 });
 
-describe("sub-dir-paths", () => {
-  it("const-file", async () => {
-    await assertFilesEqual("dir/subdir/const-file.js");
+describe("declaration", () => {
+  const ext = ".d.ts";
+
+  it("modele-file-export-declaration", async () => {
+    await assertFilesEqual("modele-file-export-declaration", ext);
   });
-  it("const-index", async () => {
-    await assertFilesEqual("dir/subdir/const-index.js");
-  });
-  it("module-file", async () => {
-    await assertFilesEqual("dir/subdir/module-file.js");
-  });
-  it("module-index", async () => {
-    await assertFilesEqual("dir/subdir/module-index.js");
+
+  it("legacy-import-declaration", async () => {
+    await assertFilesEqual("dir/legacy", ext);
   });
 });
