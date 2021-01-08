@@ -14,7 +14,7 @@ export default function transformer(
   }
 
   return {
-    before: [optionsFactory],
+    after: [optionsFactory],
     afterDeclarations: [optionsFactory]
   };
 }
