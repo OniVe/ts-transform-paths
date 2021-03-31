@@ -28,7 +28,7 @@ class ProjectOptions {
 
     const index = this.aliases.indexOf(alias);
     if (index < 0) {
-      return null;
+      return this.paths[this.aliases.indexOf(requestedModule)];
     }
 
     let mapping = this.paths[index];
