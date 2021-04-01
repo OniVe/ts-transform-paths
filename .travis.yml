@@ -1,3 +1,7 @@
+os: linux
+language: node_js
+dist: xenial
+
 jobs:
   # TODO: disable after fix - https://travis-ci.community/t/current-known-issues-please-read-this-before-posting-a-new-topic/264/10
   allow_failures:
@@ -28,5 +32,5 @@ jobs:
       script: skip
       deploy:
         provider: script
-        skip_cleanup: true
+        cleanup: false
         script: bash script/deploy.sh
