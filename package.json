@@ -1,6 +1,6 @@
 {
   "name": "ts-transform-paths",
-  "version": "0.0.0-semantic-release",
+  "version": "0.0.0-development",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "license": "MIT",
@@ -45,7 +45,7 @@
     "jasmine-ts": "^0.3.0",
     "prettier": "^1.19.1",
     "rimraf": "^2.7.1",
-    "semantic-release": "^17.2.3",
+    "semantic-release": "^17.4.4",
     "ts-node": "^7.0.1",
     "tsconfig": "^7.0.0",
     "typescript": "^3.9.7"
