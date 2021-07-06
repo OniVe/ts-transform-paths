@@ -27,4 +27,4 @@ jobs:
       deploy:
         provider: script
         skip_cleanup: true
-        script: script/deploy.sh
+        script: bash script/deploy.sh
