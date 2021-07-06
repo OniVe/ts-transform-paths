@@ -55,6 +55,14 @@ export function transformerFactory<T extends TransformerNode>(
 
       /**
        * e.g.
+       * - type Foo = import('path').Foo;
+       */
+      if (ts.isImportTypeNode(node)) {
+        return ts.visitEachChild(node, pathReplacer, context);
+      }
+
+      /**
+       * e.g.
        * - import * as x from 'path';
        * - import { x } from 'path';
        */
