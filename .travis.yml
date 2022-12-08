@@ -10,14 +10,16 @@ jobs:
       name: Linux - test
       language: node_js
       os: linux
-      node_js: "lts/*"
+      node_js:
+        - 17
       cache:
         yarn: true
       script: yarn test
     - stage: release
       language: node_js
       os: linux
-      node_js: "lts/*"
+      node_js:
+        - 17
       branches:
         only:
           - master
