@@ -16,8 +16,9 @@ yarn add ts-transform-paths -D
 
 ## Requirement
 
-ts-transform-paths^2.0.0 for TypeScript^2.0.0 or TypeScript^3.0.0
-ts-transform-paths^3.0.0 for TypeScript^4.0.0
+`ts-transform-paths^2.0.0` for `TypeScript^2.0.0` or `TypeScript^3.0.0`
+
+`ts-transform-paths^3.0.0` for `TypeScript^4.0.0`
 
 ## How to use
 
