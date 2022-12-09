@@ -30,7 +30,7 @@ export function chainBundle<T extends ts.SourceFile | ts.Bundle>(
   transformSourceFile: (x: ts.SourceFile) => ts.SourceFile
 ): (x: T) => T {
   function transformBundle(node: ts.Bundle) {
-    return ts.createBundle(
+    return ts.factory.createBundle(
       node.sourceFiles.map(transformSourceFile),
       node.prepends
     );

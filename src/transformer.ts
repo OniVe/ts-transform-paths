@@ -32,7 +32,7 @@ export function transformerFactory<T extends TransformerNode>(
         node.text
       );
       return resolvedPath !== node.text
-        ? ts.createStringLiteral(resolvedPath)
+        ? ts.factory.createStringLiteral(resolvedPath)
         : null;
     }
 

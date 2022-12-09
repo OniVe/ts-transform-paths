@@ -5,7 +5,7 @@ const WILDCARDS = ["\\*", "/*"];
 
 export function stripWildcard(path: string): string {
   if (WILDCARDS.indexOf(path.slice(-2)) > -1) {
-    return path.substr(0, path.length - 2);
+    return path.substring(0, path.length - 2);
   }
 
   return path;
