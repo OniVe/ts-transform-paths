@@ -28,5 +28,5 @@ jobs:
       script: skip
       deploy:
         provider: script
-        cleanup: true
+        cleanup: false
         script: bash script/deploy.sh
